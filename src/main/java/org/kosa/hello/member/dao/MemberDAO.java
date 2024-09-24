@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
 import org.kosa.hello.member.vo.MemberVO;
 import org.kosa.hello.page.PageRequestDTO;
-import org.springframework.stereotype.Repository;
 
 @Mapper
 public interface MemberDAO {
