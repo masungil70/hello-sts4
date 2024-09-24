@@ -23,6 +23,7 @@ public class MemberService {
 	private final MemberDAO memberDAO;
 
 	//승범이 이부분을 추가함 
+	//승범이 이부분을 새로 추가함 
 	
 	public PageResponseDTO<MemberDTO> getList(PageRequestDTO pageRequestDTO) {
 		List<MemberDTO> list = memberDAO.getList(pageRequestDTO).stream().map(member -> mapperUtil.map(member, MemberDTO.class)).collect(Collectors.toList());
