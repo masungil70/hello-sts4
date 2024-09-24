@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kosa.hello.member.dao.MemberDAO">
+
+
+	<select id="getList" resultType="org.kosa.hello.member.vo.MemberVO">
+		SELECT 
+			* 
+		FROM tbl_member
+		order by name desc
+		limit #{skip}, #{size}
+	</select>
+
+	<select id="getTotalCount" resultType="int">
+		SELECT count(*) FROM tbl_member
+	</select>
+
+            
+	<select id="getRead" resultType="org.kosa.hello.member.vo.MemberVO">
+		SELECT * FROM tbl_member where uid = #{uid} 
+	</select>	
+	
+	<select id="getRead_uuid" resultType="org.kosa.hello.member.vo.MemberVO">
+		SELECT * FROM tbl_member where uuid = #{uuid} 
+	</select>	
+
+
+	<delete id="remove" >
+		delete FROM tbl_member where uid = #{uid}
+	</delete>
+
+	
+	<update id="modify" parameterType="org.kosa.hello.member.vo.MemberVO">
+		update tbl_member set 
+			 pwd  = #{pwd}
+			,name = #{name} 
+		where uid = #{uid}
+	</update>
+	
+	<update id="modify_uuid" parameterType="org.kosa.hello.member.vo.MemberVO">
+		update tbl_member set 
+			 uuid = #{uuid} 
+		where uid = #{uid}
+	</update>
+	
+	<insert id="insert">
+		insert into tbl_member (
+			uid, pwd, name
+		) values (
+			#{uid}, #{pwd}, #{name}
+		)
+	</insert>
+
+</mapper>	

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.kosa.hello.todo.dao.TodoDAO">
+	<sql id="search">
+		<where>
+			<if test="keyword != null and keyword.length > 0 and types != null and types.length > 0">
+				<foreach collection="types" item="type" open="(" close=")" separator=" or ">
+					<if test="type == 'title'">
+						title LIKE concat('%', #{keyword}, '%')
+					</if>
+					<if test="type == 'writer'">
+						m.name LIKE concat('%', #{keyword}, '%')
+					</if>
+				</foreach>
+			</if>
+			
+			<choose>
+				<when test="finished == 3">
+					<trim prefix="and">
+						finished = 1
+					</trim>
+				</when>
+				<when test="finished == 2">
+					<trim prefix="and">
+						finished = 0
+					</trim>
+				</when>
+			</choose>
+
+			<if test="from != null and to != null ">
+				<trim prefix="and">
+					dueDate between #{from} and #{to}
+				</trim>
+			</if>
+			<if test="from != null and to == null ">
+				<trim prefix="and">
+					dueDate >= #{from} 
+				</trim>
+			</if>
+			<if test="from == null and to != null ">
+				<trim prefix="and">
+					<![CDATA[
+					dueDate <= #{to}
+					]]>
+				</trim>
+			</if>
+		</where>	
+	</sql>
+	
+	<select id="getList" resultType="org.kosa.hello.todo.vo.TodoVO">
+		SELECT 
+			t.* 
+		FROM tbl_todo t INNER JOIN tbl_member m ON t.uid = m.uid 
+		<include refid="search"/>
+		order by id desc
+		limit #{skip}, #{size}
+	</select>
+
+	<select id="getTotalCount" resultType="int">
+		SELECT count(*) FROM tbl_todo t INNER JOIN tbl_member m ON t.uid = m.uid
+		<include refid="search"/>
+	</select>	
+
+	<select id="getRead" resultType="org.kosa.hello.todo.vo.TodoVO">
+		SELECT * FROM tbl_todo where id = #{id}
+	</select>	
+	
+	<delete id="remove" >
+		delete FROM tbl_todo where id = #{id}
+	</delete>
+	
+	<update id="modify" parameterType="org.kosa.hello.todo.vo.TodoVO">
+		update tbl_todo set 
+			  title = #{title}
+			, dueDate = #{dueDate}
+			, finished = #{finished}  
+		where id = #{id}
+	</update>
+	
+	<insert id="insert">
+		insert into tbl_todo (
+			 uid
+			,title
+			,dueDate
+		) values (
+			 #{uid}
+			,#{title}
+			,#{dueDate}
+		)
+	</insert>
+
+</mapper>	

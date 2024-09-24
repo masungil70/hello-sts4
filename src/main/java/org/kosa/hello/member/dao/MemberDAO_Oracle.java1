@@ -1,0 +1,194 @@
+package org.kosa.hello.member.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.kosa.hello.member.vo.MemberVO;
+import org.kosa.hello.util.ConnectionUtil;
+import org.springframework.stereotype.Repository;
+
+//@Repository
+public class MemberDAO_Oracle implements MemberDAO {
+    private Connection conn;
+    private PreparedStatement pstmt_getList = null;
+    private PreparedStatement pstmt_getRead = null;
+    private PreparedStatement pstmt_getRead_uuid = null;
+    private PreparedStatement pstmt_remove = null;
+    private PreparedStatement pstmt_modify = null;
+    private PreparedStatement pstmt_modify_uuid = null;
+    private PreparedStatement pstmt_insert = null;
+
+    public MemberDAO_Oracle() {
+        try {
+            conn = ConnectionUtil.INSTANCE.getConenction();
+            
+            pstmt_getList = conn.prepareStatement("SELECT * FROM tbl_member");
+            pstmt_getRead = conn.prepareStatement("SELECT * FROM tbl_member where uid=?");
+            pstmt_getRead_uuid = conn.prepareStatement("SELECT * FROM tbl_member where uuid=?");
+            pstmt_remove = conn.prepareStatement("delete FROM tbl_member where uid=?");
+            pstmt_modify = conn.prepareStatement("update tbl_member set pwd=?, name=? where uid=?");
+            pstmt_modify_uuid = conn.prepareStatement("update tbl_member set uuid=? where uid=?");
+            pstmt_insert = conn.prepareStatement("insert into tbl_member (uid, pwd, name) values (?, ?, ?)");
+             
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+    }
+    
+	public List<MemberVO> getList() {
+        ResultSet rs = null;
+        List<MemberVO> list = new ArrayList<>();
+        
+        try {
+            rs = pstmt_getList.executeQuery();
+            
+            while(rs.next()) {
+            	list.add(new MemberVO(rs.getString("uid")
+            			, rs.getString("pwd")
+            			, rs.getString("name")
+            			, rs.getString("uuid")
+            			));	
+            } 
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try {
+                if (rs != null) rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
+	}
+
+
+
+	public Optional<MemberVO> getRead(String uid) {
+		ResultSet rs = null;
+        MemberVO member = null;
+        
+        try {
+        	pstmt_getRead.setString(1, uid);
+            rs = pstmt_getRead.executeQuery();
+            
+            if (rs.next()) {
+            	member = new MemberVO(rs.getString("uid")
+            			, rs.getString("pwd")
+            			, rs.getString("name")
+            			, rs.getString("uuid")
+            			);	
+            } 
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return Optional.of(member);	
+	}
+
+	public Optional<MemberVO> getRead_uuid(String uuid) {
+		ResultSet rs = null;
+        MemberVO member = null;
+        
+        try {
+        	pstmt_getRead_uuid.setString(1, uuid);
+            rs = pstmt_getRead_uuid.executeQuery();
+            
+            if (rs.next()) {
+            	member = new MemberVO(rs.getString("uid")
+            			, rs.getString("pwd")
+            			, rs.getString("name")
+            			, rs.getString("uuid")
+            			);	
+            	return Optional.of(member);
+            } 
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return Optional.empty();	
+	}
+
+
+	public int remove(String uid) {
+        try {
+        	pstmt_remove.setString(1, uid);
+        	return pstmt_remove.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        } finally {
+        }
+	}
+	
+	public int  modify(MemberVO member) {
+		int updatedCount = 0;
+        
+        try {
+        	pstmt_modify.setString(1, member.getPwd());
+        	pstmt_modify.setString(2, member.getName());
+        	pstmt_modify.setString(3, member.getUid());
+        	updatedCount = pstmt_modify.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return updatedCount;
+        } finally {
+        }
+        return updatedCount;	
+	}
+	
+	public int  modify_uuid(MemberVO member) {
+		int updatedCount = 0;
+        
+        try {
+        	pstmt_modify_uuid.setString(1, member.getUuid());
+        	pstmt_modify_uuid.setString(2, member.getUid());
+        	updatedCount = pstmt_modify_uuid.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return updatedCount;
+        } finally {
+        }
+        return updatedCount;	
+	}
+	
+	public int  insert(MemberVO member) {
+		int updatedCount = 0;
+        
+        try {
+        	pstmt_insert.setString(1, member.getUid());
+        	pstmt_insert.setString(2, member.getPwd());
+        	pstmt_insert.setString(3, member.getName());
+        	updatedCount = pstmt_insert.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return updatedCount;
+        } finally {
+        }
+        return updatedCount;	
+	}
+	
+}
