@@ -9,6 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class BoardController {
-	
+	//경섭이 작업한 것 
 }
 
