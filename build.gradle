@@ -25,6 +25,9 @@ repositories {
 }
 
 dependencies {
+	//spring boot security 관련 설정 
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	
 	compileOnly 'org.projectlombok:lombok'
