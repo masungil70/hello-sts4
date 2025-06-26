@@ -39,11 +39,14 @@ dependencies {
 	//jsp를 사용하기 위한 설정 
 	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 	implementation 'jakarta.servlet:jakarta.servlet-api' 
-	
+	 
 	//jstl 템플릿 라이브러리 사용 하기 위한 설정 
-	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
-	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl' 
+	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+	runtimeOnly 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.0'
 	
+	// JSP 실행을 위한 Expression Language (EL) 구현체
+	runtimeOnly 'org.glassfish:jakarta.el:4.0.2'
+
 	//mybatis 설정 
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'

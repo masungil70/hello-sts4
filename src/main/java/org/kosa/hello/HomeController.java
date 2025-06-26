@@ -29,7 +29,7 @@ public class HomeController {
 		Date date = new Date();
 		model.addAttribute("serverTime", sdf.format(date));
 		
-		return "home";
+		return "/home";
 	}
 	
 }
